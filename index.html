@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>✨✨Tools✨✨</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: white;
+    color: black;
+    padding: 1rem;
+    max-width: 100%;
+    margin: auto;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+  }
+
+  .tab-header {
+    display: flex;
+    background: #f5f5f5;
+    border-radius: 12px;
+    padding: 0.2rem;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0.8rem;
+    color: #666;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    background: #007bff;
+    color: white;
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  textarea, input {
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 2px solid #dee2e6 !important;
+    background: #f8f9fa;
+    color: black;
+    box-sizing: border-box;
+    caret-color: black;
+  }
+
+  textarea, input::placeholder {
+    color: #666 !important;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  #inputArea {
+    margin-bottom: 1rem;
+  }
+
+  /* ✅ FIXED OUTPUT BOX - CLEAR & VISIBLE */
+  .outputArea, .result {
+    margin: 1.5rem 0 !important;
+    background: #f8f9fa !important;
+    padding: 1.5rem !important;
+    border-radius: 12px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    cursor: pointer;
+    position: relative;
+    min-height: 6rem !important;
+    border: 3px solid #dee2e6 !important;
+    transition: all 0.2s ease;
+    font-size: 1.1rem !important;
+    line-height: 1.5 !important;
+    color: black !important;
+  }
+
+  .outputArea:active, .result:active,
+  .outputArea:touchstart, .result:touchstart {
+    transform: scale(0.98);
+  }
+
+  .outputArea:hover, .result:hover,
+  .outputArea:focus, .result:focus {
+    border-color: #007bff !important;
+    background: #e9ecef !important;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  }
+
+  .outputArea.copied, .result.copied {
+    border-color: #007bff !important;
+    background: #007bff !important;
+    color: white !important;
+  }
+
+  .outputArea.copied::after, .result.copied::after {
+    content: '✓ COPIED!';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: white;
+    color: #007bff;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    animation: bounce 0.5s ease;
+  }
+
+  @keyframes bounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  #conversionList, #conversionListSimple {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+
+  .convertBtn {
+    background: #007bff;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    padding: 0.8rem 0.6rem;
+    min-width: 100px;
+    text-align: center;
+    user-select: none;
+    transition: all 0.2s;
+    font-weight: 600;
+    font-size: 0.8rem;
+    touch-action: manipulation;
+  }
+
+  .convertBtn:active {
+    transform: scale(0.95);
+  }
+
+  .convertBtn:hover {
+    background: #0056b3;
+    color: white;
+  }
+
+  .convertDesc {
+    font-size: 0.6rem;
+    color: white;
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  .section {
+    background: #f8f9fa;
+    padding: 1.2rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #dee2e6;
+  }
+
+  .section h3 {
+    margin: 0 0 1rem 0;
+    color: #007bff;
+    font-size: 1.1rem;
+  }
+
+  label {
+    font-weight: 600;
+    margin-top: 0.8rem;
+    display: block;
+    font-size: 0.9rem;
+    color: #333;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  @media (max-width: 767px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .section {
+      margin-bottom: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>✨✨Tools✨✨</h1>
+
+<div class="tab-header">
+  <button class="tab-btn active" onclick="switchTab('regex')">Smali Regex</button>
+  <button class="tab-btn" onclick="switchTab('time')">UTC Time</button>
+  <button class="tab-btn" onclick="switchTab('simple')">Simple Converters</button>
+</div>
+
+<!-- Tab 1: Smali Regex -->
+<div id="regex" class="tab-content active">
+  <div id="inputArea">
+    <textarea id="inputText" rows="4" placeholder="Enter your smali code here... 👈"></textarea>
+  </div>
+  <div class="outputArea" id="outputArea" title="TAP TO COPY!">Tap the button below 👇</div>
+  <div id="conversionList">
+    <button class="convertBtn" data-action="smaliRegex">
+      Regex → Smali
+      <div class="convertDesc"></div>
+    </button>
+  </div>
+</div>
+
+<!-- Tab 2: UTC Time -->
+<div id="time" class="tab-content">
+  <div class="container">
+    <div class="section">
+      <h3>UTC → Millis & Hex</h3>
+      <div class="form-row">
+        <div>
+          <label>Day</label>
+          <input type="number" id="day" placeholder="">
+        </div>
+        <div>
+          <label>Month</label>
+          <input type="number" id="month" placeholder="">
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label>Year</label>
+          <input type="number" id="year" placeholder="">
+        </div>
+        <div>
+          <label>Hour</label>
+          <input type="number" id="hour" placeholder="">
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label>Minute</label>
+          <input type="number" id="minute" placeholder="">
+        </div>
+        <div>
+          <label>Second</label>
+          <input type="number" id="second" placeholder="">
+        </div>
+      </div>
+      <button class="convertBtn" onclick="utcToMillis()">Convert UTC → Millis & Hex</button>
+      <div class="result" id="utcResult">Enter date above 👆</div>
+    </div>
+
+    <div class="section">
+      <h3>Millis/Seconds → UTC & Hex</h3>
+      <label>Milliseconds or Seconds</label>
+      <input type="number" id="millis" placeholder="">
+      <button class="convertBtn" onclick="millisToUTC()">Convert → UTC & Hex</button>
+      <div class="result" id="millisResult">Enter number above 👆</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Hex → UTC & Milliseconds</h3>
+    <label>Hexadecimal (no 0x)</label>
+    <input type="text" id="hex" placeholder="">
+    <button class="convertBtn" onclick="hexToUTC()">Convert Hex → UTC & Millis</button>
+    <div class="result" id="hexResult">Enter hex above 👆</div>
+  </div>
+</div>
+
+<!-- Tab 3: Simple Converters -->
+<div id="simple" class="tab-content">
+  <div id="inputArea">
+    <textarea id="inputTextSimple" rows="4" placeholder="Type here... "></textarea>
+  </div>
+  <div class="outputArea" id="outputAreaSimple" title="TAP TO COPY!">Tap a button below 👇</div>
+  <div id="conversionListSimple">
+    <button class="convertBtn" data-action="textToBase64">
+      Text → Base64
+      <div class="convertDesc">Encode</div>
+    </button>
+    <button class="convertBtn" data-action="textToUnicode">
+      Text → Unicode
+      <div class="convertDesc">Escapes</div>
+    </button>
+    <button class="convertBtn" data-action="textToASCII">
+      Text → ASCII
+      <div class="convertDesc">Codes</div>
+    </button>
+    <button class="convertBtn" data-action="asciiToText">
+      ASCII → Text
+      <div class="convertDesc">Decode</div>
+    </button>
+    <button class="convertBtn" data-action="decToOthers">
+      Decimal
+      <div class="convertDesc">→ Bin/Hex</div>
+    </button>
+    <button class="convertBtn" data-action="binToOthers">
+      Binary
+      <div class="convertDesc">→ Dec/Hex</div>
+    </button>
+    <button class="convertBtn" data-action="hexToOthers">
+      Hex
+      <div class="convertDesc">→ Dec/Bin</div>
+    </button>
+    <button class="convertBtn" data-action="floatToBinHex">
+      Float
+      <div class="convertDesc">IEEE754</div>
+    </button>
+  </div>
+</div>
+
+<script>
+  // Tab switching
+  function switchTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(tabName).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // PERFECT COPY FUNCTION
+  function copyToClipboard(text, elementId) {
+    const tempInput = document.createElement('textarea');
+    tempInput.value = text;
+    tempInput.style.position = 'fixed';
+    tempInput.style.opacity = '0';
+    tempInput.setAttribute('readonly', '');
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    showCopied(elementId);
+  }
+
+  function showCopied(elementId) {
+    const element = document.getElementById(elementId);
+    element.classList.add('copied');
+    setTimeout(() => element.classList.remove('copied'), 2000);
+  }
+
+  // SMALI REGEX FUNCTIONS
+  function escapeSpecialChars(str) {
+    return str.replace(/([.(){}\[\]+*^$?|\\])/g, '\\$1');
+  }
+
+  function smaliRegex(input) {
+    let result = escapeSpecialChars(input);
+    result = result.replace(/\b[vp]\d+\b/gi, "([v|p]\\d+)");
+    result = result.replace(/\b\d+\b/g, "\\d+");
+    result = result.replace(/\s+/g, "\\s*");
+    return result;
+  }
+
+  // TIME CONVERSION FUNCTIONS
+  function pad(n) {
+    return n < 10 ? '0' + n : n;
+  }
+
+  function formatUTCDate(date) {
+    return date.getUTCFullYear() + "-" +
+      pad(date.getUTCMonth() + 1) + "-" +
+      pad(date.getUTCDate()) + " " +
+      pad(date.getUTCHours()) + ":" +
+      pad(date.getUTCMinutes()) + ":" +
+      pad(date.getUTCSeconds());
+  }
+
+  function utcToMillis() {
+    const day = parseInt(document.getElementById("day").value);
+    const month = parseInt(document.getElementById("month").value) - 1;
+    const year = parseInt(document.getElementById("year").value);
+    const hour = parseInt(document.getElementById("hour").value);
+    const minute = parseInt(document.getElementById("minute").value);
+    const second = parseInt(document.getElementById("second").value);
+
+    if (!day || !month || !year || hour === undefined || minute === undefined || second === undefined) {
+      document.getElementById("utcResult").innerText = 'Please fill all fields 👆';
+      return;
+    }
+
+    const date = new Date(Date.UTC(year, month, day, hour, minute, second));
+    const millis = date.getTime();
+    const hex = millis.toString(16);
+
+    document.getElementById("utcResult").innerText =
+      `Milliseconds: ${millis}\nHex: ${hex}`;
+  }
+
+  function millisToUTC() {
+    let millis = parseInt(document.getElementById("millis").value.trim());
+    if (!millis) {
+      document.getElementById("millisResult").innerText = 'Enter a number above 👆';
+      return;
+    }
+
+    let sourceType = "Milliseconds";
+    if (millis < 10000000000) {
+      millis *= 1000;
+      sourceType = "Seconds (converted to ms)";
+    }
+
+    const date = new Date(millis);
+    const utcString = formatUTCDate(date);
+    const hex = millis.toString(16);
+
+    document.getElementById("millisResult").innerText =
+      `Input Type: ${sourceType}\nUTC: ${utcString} (UTC)\nMilliseconds: ${millis}\nHex: ${hex}`;
+  }
+
+  function hexToUTC() {
+    const hex = document.getElementById("hex").value.trim();
+    if (!hex) {
+      document.getElementById("hexResult").innerText = 'Enter hex above 👆';
+      return;
+    }
+
+    const millis = parseInt(hex, 16);
+    const date = new Date(millis);
+    const utcString = formatUTCDate(date);
+
+    document.getElementById("hexResult").innerText =
+      `Milliseconds: ${millis}\nUTC: ${utcString} (UTC)`;
+  }
+
+  // SIMPLE CONVERTER FUNCTIONS
+  function textToBase64(str) { try { return btoa(unescape(encodeURIComponent(str))); } catch { return "❌ Invalid"; } }
+  function textToUnicode(str) { return [...str].map(c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')).join(''); }
+  function textToASCII(str) { return [...str].map(c => c.charCodeAt(0)).join(' '); }
+  function asciiToText(str) { try { return str.trim().split(/\s+/).map(n => String.fromCharCode(parseInt(n))).join(''); } catch { return "❌ Invalid"; } }
+  function decToOthers(str) { let dec = parseInt(str, 10); if (isNaN(dec)) return "❌ Invalid"; return `Decimal: ${dec}\nBinary: ${dec.toString(2)}\nHex: ${dec.toString(16).toUpperCase()}\nOctal: ${dec.toString(8)}`; }
+  function binToOthers(str) { if (!/^[01]+$/.test(str)) return "❌ Invalid"; let dec = parseInt(str, 2); return `Decimal: ${dec}\nBinary: ${str}\nHex: ${dec.toString(16).toUpperCase()}`; }
+  function hexToOthers(str) { if (!/^[0-9a-fA-F]+$/.test(str)) return "❌ Invalid"; let dec = parseInt(str, 16); return `Decimal: ${dec}\nBinary: ${dec.toString(2)}\nHex: ${str.toUpperCase()}`; }
+  function floatToBinHex(str) { let f = parseFloat(str); if (isNaN(f)) return "❌ Invalid"; let buffer = new ArrayBuffer(4); new Float32Array(buffer)[0] = f; let intVal = new Uint32Array(buffer)[0]; let bin = intVal.toString(2).padStart(32, '0'); let hex = intVal.toString(16).padStart(8, '0').toUpperCase(); return `Float: ${f}\nBinary: ${bin}\nHex: 0x${hex}`; }
+
+  // EVENT LISTENERS
+  document.addEventListener('DOMContentLoaded', function() {
+    // Regex tab buttons
+    const regexButtons = document.querySelectorAll('#conversionList .convertBtn');
+    regexButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = btn.getAttribute('data-action');
+        const val = document.getElementById('inputText').value.trim();
+        let output = '';
+
+        if (!val) { 
+          document.getElementById('outputArea').textContent = 'Type something above 👆'; 
+          return; 
+        }
+
+        switch(action) {
+          case 'smaliRegex': output = smaliRegex(val); break;
+        }
+
+        document.getElementById('outputArea').textContent = output;
+      });
+    });
+
+    // Simple converters buttons
+    const simpleButtons = document.querySelectorAll('#conversionListSimple .convertBtn');
+    simpleButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = btn.getAttribute('data-action');
+        const val = document.getElementById('inputTextSimple').value.trim();
+        let output = '';
+
+        if (!val) { 
+          document.getElementById('outputAreaSimple').textContent = 'Type something above 👆'; 
+          return; 
+        }
+
+        switch(action) {
+          case 'textToBase64': output = textToBase64(val); break;
+          case 'textToUnicode': output = textToUnicode(val); break;
+          case 'textToASCII': output = textToASCII(val); break;
+          case 'asciiToText': output = asciiToText(val); break;
+          case 'decToOthers': output = decToOthers(val); break;
+          case 'binToOthers': output = binToOthers(val); break;
+          case 'hexToOthers': output = hexToOthers(val); break;
+          case 'floatToBinHex': output = floatToBinHex(val); break;
+        }
+
+        document.getElementById('outputAreaSimple').textContent = output;
+      });
+    });
+
+    // TAP TO COPY - ALL OUTPUT AREAS
+    const allOutputs = ['outputArea', 'outputAreaSimple', 'utcResult', 'millisResult', 'hexResult'];
+    allOutputs.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          const content = element.textContent;
+          if (content && !content.includes('👆')) {
+            copyToClipboard(content, id);
+          }
+        });
+        element.addEventListener('click', (e) => {
+          e.preventDefault();
+          const content = element.textContent;
+          if (content && !content.includes('👆')) {
+            copyToClipboard(content, id);
+          }
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
